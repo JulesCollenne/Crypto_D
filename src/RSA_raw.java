@@ -17,20 +17,46 @@ public class RSA_raw {
         d = new BigInteger("56148581171448620129544540223", 10);
 
         do {
-            p = new BigInteger(1024, 50, rand);
-            q = new BigInteger(1024, 50, rand);
-        } while(p.compareTo(q) == 0);
-        n = p.multiply(q);
-        w = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+            do {
+                p = new BigInteger(1024, 50, rand);
+                q = new BigInteger(1024, 50, rand);
+            } while (p.compareTo(q) == 0);
+            n = p.multiply(q);
+            w = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+            System.out.println("n = " + n);
+            System.out.println("w = " + w);
+
+            do {
+                d = new BigInteger(w.bitLength(), rand).add(BigInteger.ONE);
+            } while (d.compareTo(w.subtract(BigInteger.ONE)) > 0 || !d.gcd(w).equals(BigInteger.ONE));
+            e = d.modInverse(w);
+        } while(!p.subtract(BigInteger.ONE).gcd(e).equals(BigInteger.ONE) && !q.subtract(BigInteger.ONE).gcd(e).equals(BigInteger.ONE));
+
+        System.out.println("e = " + e);
+
+    }
+
+    static void fabriqueEnRegle() {           // Fabrique d'une paire de clefs RSA (A MODIFIER)
+        Random rand = new Random();
+        BigInteger p, q, w;
+        n = new BigInteger("196520034100071057065009920573", 10);
+        e = new BigInteger("65537", 10);
+        d = new BigInteger("56148581171448620129544540223", 10);
+
+        do {
+            do {
+                p = new BigInteger(1024, 50, rand);
+                q = new BigInteger(1024, 50, rand);
+            } while (p.compareTo(q) == 0);
+            n = p.multiply(q);
+            w = (p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE)));
+        } while(!e.gcd(w).equals(BigInteger.ONE));
+
+        d = e.modInverse(w);
+
         System.out.println("n = " + n);
         System.out.println("w = " + w);
-
-        do{
-            d = new BigInteger(w.bitLength(), rand).add(BigInteger.ONE);
-        } while(d.compareTo(w.subtract(BigInteger.ONE)) > 0 && !d.gcd(w).equals(BigInteger.ONE));
-
-        e = d.modInverse(w);
-
+        System.out.println("e = " + e);
     }
 
     public static void main(String[] args) {
@@ -39,7 +65,7 @@ public class RSA_raw {
         /* Affichage du code clair */
         System.out.println("Code clair        : " + code);
 
-        fabrique();
+        fabriqueEnRegle();
 
         /* Affichage des clefs utilisées */
         System.out.println("Clef publique (n) : " + n);
